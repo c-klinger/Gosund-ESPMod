@@ -1,0 +1,117 @@
+# Gosund SP112 smart plug with power sensor
+
+# Enable Web server
+web_server:
+  port: 80
+#
+substitutions:
+  plug_name: wifiplug
+  # Higher value gives lower watt readout
+  current_res: "0.0012"
+  # Lower value gives lower voltage readout
+  voltage_div: "771"
+#
+esphome:
+  name: ${plug_name}
+  platform: ESP8266
+  board: esp12e
+
+# WiFi connection
+wifi:
+  networks:
+  - ssid: "<redacted>"
+    password: "<redacted>"
+
+  # Optional manual IP
+#  manual_ip:
+#    static_ip: 172.20.10.8
+#    gateway: 172.20.10.1
+#    subnet: 255.255.255.0
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "${plug_name}_AP"
+    password: "${plug_name}"
+
+captive_portal:
+
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO16
+      inverted: false
+    name: "${plug_name}_Button"
+    on_press:
+      - switch.toggle: mains_relay
+
+switch:
+- platform: gpio
+  name: "${plug_name}_Mains_Relay"
+  id: mains_relay
+  pin: GPIO14
+  restore_mode: ALWAYS_ON
+- platform: gpio
+  name: "${plug_name}_USB_Relay"
+  pin: GPIO13
+  inverted: true
+  restore_mode: ALWAYS_ON
+- platform: gpio
+  name: "${plug_name}_LED_Blue"
+  pin: GPIO15
+  inverted: True
+  restore_mode: ALWAYS_OFF
+- platform: gpio
+  name: "${plug_name}_LED_Red"
+  pin: GPIO00
+  inverted: True
+  restore_mode: ALWAYS_OFF
+sensor:
+  - platform: hlw8012
+    sel_pin:
+      number: GPIO12
+      inverted: True
+    cf_pin: GPIO05
+    cf1_pin: GPIO04
+    current_resistor: ${current_res}
+    voltage_divider: ${voltage_div}
+    change_mode_every: 3
+    update_interval: 5s
+    current:
+      name: "${plug_name}_Amperage"
+      unit_of_measurement: A
+      accuracy_decimals: 3
+    voltage:
+      name: "${plug_name}_Voltage"
+      unit_of_measurement: V
+      accuracy_decimals: 1
+    power:
+      name: "${plug_name}_Wattage"
+      unit_of_measurement: W
+      accuracy_decimals: 0
+      filters:
+      - multiply: 0.5
+      id: "${plug_name}_Wattage"
+  - platform: total_daily_energy
+    name: "${plug_name}_Total Daily Energy"
+    power_id: "${plug_name}_Wattage"
+    filters:
+        # Multiplication factor from W to kW is 0.001
+        - multiply: 0.001
+    unit_of_measurement: kWh
+
+# Extra sensor to keep track of plug uptime
+  - platform: uptime
+    name: ${plug_name}_Uptime Sensor
