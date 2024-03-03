@@ -1,9 +1,11 @@
 # Gosund-ESPMod
-Adapter PCB to replace the CUCO-Z0 Modules on newer Gosund Smart Plugs with ESP-M2 Modules. Enables to use custom firmware like [Tasmota](https://tasmota.github.io/docs/) again.
+The ESP12F branch is a small tweak from the original ESP-M2 adapter work to fit ESP-12F modules instead. Most of what comes after is from the original branch.
 
-![PCB Picture](https://raw.githubusercontent.com/c-klinger/Gosund-ESPMod/main/images/pcbs.jpg)
+Adapter PCB to replace the CUCO-Z0 Modules on newer Gosund Smart Plugs with ESP-12F Modules. Enables to use custom firmware like [Tasmota](https://tasmota.github.io/docs/) again.
 
-[Schematics](https://github.com/c-klinger/Gosund-ESPMod/blob/main/gosund-esp-adapter.pdf)
+![PCB Picture](https://github.com/nutsoh/Gosund-ESPMod/blob/9bdc381ff534afd5aa08f2cfda641b2d8495a1db/images/pcb_assembled.jpg)
+
+[Schematics](https://github.com/nutsoh/Gosund-ESPMod/blob/9bdc381ff534afd5aa08f2cfda641b2d8495a1db/gosund-esp-adapter.pdf)
 
 The PCB features a Solder Jumper on the back side to control the pin mapping. 
 
